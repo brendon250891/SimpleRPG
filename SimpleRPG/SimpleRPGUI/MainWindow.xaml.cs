@@ -36,5 +36,30 @@ namespace SimpleRPGUI
         {
             _gameSession.Move((sender as Button).Content.ToString());
         }
+
+        private void GetKeyboardInput(object sender, KeyEventArgs e)
+        {
+            switch(e.Key)
+            {
+                case Key.Up:
+                    _gameSession.Move("North");
+                    break;
+
+                case Key.Left:
+                    _gameSession.Move("West");
+                    break;
+
+                case Key.Right:
+                    _gameSession.Move("East");
+                    break;
+
+                case Key.Down:
+                    _gameSession.Move("South");
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 }

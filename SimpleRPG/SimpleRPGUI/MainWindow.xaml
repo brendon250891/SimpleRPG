@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:SimpleRPGUI"
         mc:Ignorable="d"
         FontSize="11pt"
-        Title="SimpleRPG" Height="768" Width="1024">
+        Title="SimpleRPG" Height="768" Width="1024"
+        KeyDown="GetKeyboardInput">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
