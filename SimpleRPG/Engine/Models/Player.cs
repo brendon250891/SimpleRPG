@@ -52,5 +52,15 @@ namespace Engine.Models
                 OnPropertyChanged(nameof(Gold));
             }
         }
+
+        public Player(string name, string characterClass, int hitPoints, int experiencePoints, int level, int gold)
+        {
+            Name = name;
+            CharacterClass = characterClass;
+            HitPoints = hitPoints;
+            ExperiencePoints = experiencePoints;
+            Level = level;
+            Gold = gold;
+        }
     }
 }
