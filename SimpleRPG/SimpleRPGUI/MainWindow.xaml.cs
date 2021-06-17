@@ -31,5 +31,10 @@ namespace SimpleRPGUI
 
             DataContext = _gameSession;
         }
+
+        private void OnClick_Move(object sender, RoutedEventArgs e)
+        {
+            _gameSession.Move((sender as Button).Content.ToString());
+        }
     }
 }
