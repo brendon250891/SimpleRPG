@@ -10,7 +10,7 @@ namespace Engine.ViewModels
     public class GameSession
     {
         public Player CurrentPlayer { get; set; }
-
+        public Location CurrentLocation { get; set; }
         public GameSession()
         {
             CurrentPlayer = new Player();
@@ -20,6 +20,8 @@ namespace Engine.ViewModels
             CurrentPlayer.HitPoints = 10;
             CurrentPlayer.ExperiencePoints = 0;
             CurrentPlayer.Level = 1;
+
+            CurrentLocation = new Location(0, -1, "Home", "This is your house", "pack://application:,,,/Engine;component/Images/Locations/Home.png");
         }
     }
 }
