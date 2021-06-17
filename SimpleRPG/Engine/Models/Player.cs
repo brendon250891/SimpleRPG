@@ -7,8 +7,8 @@ using System.ComponentModel;
 
 namespace Engine.Models
 {
-    public class Player : INotifyPropertyChanged
-    {
+    public class Player : BaseNotification
+    { 
         private int _experiencePoints;
         private int _hitPoints;
         private int _level;
@@ -51,13 +51,6 @@ namespace Engine.Models
                 _gold = value;
                 OnPropertyChanged(nameof(Gold));
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
