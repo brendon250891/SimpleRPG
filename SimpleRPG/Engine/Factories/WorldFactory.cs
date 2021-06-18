@@ -21,6 +21,9 @@ namespace Engine.Factories
             newWorld.AddLocation(1, 0, "Town Gate", "There is a gate here, protecting the town from giant spiders.", "TownGate");
             newWorld.AddLocation(2, 0, "Spider Forest", "The trees in this forest are covered with spider webs.", "SpiderForest");
             newWorld.AddLocation(0, 1, "Herbalist's Hut", "You see a small hut, with plants drying from the roof.", "HerbalistsHut");
+
+            newWorld.LocationAt(0, 1).AvailableQuests.Add(QuestFactory.GetQuestByID(1));
+
             newWorld.AddLocation(0, 2, "Herbalist's Garden", "There are many plants here, with snakes hiding behind them.", "HerbalistsGarden");
 
             return newWorld;

@@ -25,6 +25,8 @@ namespace Engine.ViewModels
                 OnPropertyChanged(nameof(CanMoveWest));
                 OnPropertyChanged(nameof(CanMoveEast));
                 OnPropertyChanged(nameof(CanMoveSouth));
+
+                GivePlayerQuests();
             }
         }
         public World CurrentWorld { get; set; }
@@ -97,6 +99,17 @@ namespace Engine.ViewModels
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void GivePlayerQuests()
+        {
+            foreach (Quest quest in CurrentLocation.AvailableQuests)
+            {
+                if (!CurrentPlayer.Quests.Any(q => q.PlayerQuest.ID == quest.ID))
+                {
+                    CurrentPlayer.Quests.Add(new(quest));
+                }
             }
         }
     }
