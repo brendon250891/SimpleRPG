@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Engine.Models
 {
@@ -53,6 +48,8 @@ namespace Engine.Models
             }
         }
 
+        public ObservableCollection<GameItem> Inventory { get; set; }
+
         public Player(string name, string characterClass, int hitPoints, int experiencePoints, int level, int gold)
         {
             Name = name;
@@ -61,6 +58,8 @@ namespace Engine.Models
             ExperiencePoints = experiencePoints;
             Level = level;
             Gold = gold;
+
+            Inventory = new();
         }
     }
 }
