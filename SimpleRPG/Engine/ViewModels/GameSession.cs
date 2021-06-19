@@ -12,6 +12,7 @@ namespace Engine.ViewModels
     public class GameSession : BaseNotification
     {
         private Location _currentLocation;
+        private Monster _currentMonster;
 
         public Player CurrentPlayer { get; set; }
         public Location CurrentLocation 
@@ -27,6 +28,7 @@ namespace Engine.ViewModels
                 OnPropertyChanged(nameof(CanMoveSouth));
 
                 GivePlayerQuests();
+                GetMonsterAtLocation();
             }
         }
         public World CurrentWorld { get; set; }
@@ -59,6 +61,20 @@ namespace Engine.ViewModels
                 return CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate - 1) != null;
             }
         }
+
+        public Monster CurrentMonster
+        {
+            get { return _currentMonster; }
+            set
+            {
+                _currentMonster = value;
+
+                OnPropertyChanged(nameof(CurrentMonster));
+                OnPropertyChanged(nameof(HasMonster));
+            }
+        }
+
+        public bool HasMonster => CurrentMonster != null;
 
         public GameSession()
         {
@@ -111,6 +127,11 @@ namespace Engine.ViewModels
                     CurrentPlayer.Quests.Add(new(quest));
                 }
             }
+        }
+
+        private void GetMonsterAtLocation()
+        {
+            CurrentMonster = CurrentLocation.GetMonster();
         }
     }
 }
