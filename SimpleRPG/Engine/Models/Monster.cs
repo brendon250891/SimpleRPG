@@ -32,7 +32,7 @@ namespace Engine.Models
         public Monster(string name, string imageName, int maximumHitPoints, int hitPoints, int rewardExperiencePoints, int rewardGold)
         {
             Name = name;
-            ImageName = $"pack://application:,,,/Engine;component/Images/Locations/{imageName}.png";
+            ImageName = $"pack://application:,,,/Engine;component/Images/Monsters/{imageName}.png";
             MaximumHitPoints = maximumHitPoints;
             HitPoints = hitPoints;
             RewardExperiencePoints = rewardExperiencePoints;
