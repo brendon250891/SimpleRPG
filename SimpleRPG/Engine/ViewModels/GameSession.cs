@@ -6,18 +6,31 @@ using System.Threading.Tasks;
 using Engine.Models;
 using Engine.Factories;
 using System.ComponentModel;
+using Engine.EventArgs;
 
 namespace Engine.ViewModels
 {
     public class GameSession : BaseNotification
     {
+        #region Events
+
+        public event EventHandler<GameMessageEventArgs> OnMessageRaised;
+
+        #endregion
+
+        #region Private Properties
+
         private Location _currentLocation;
         private Monster _currentMonster;
 
+        #endregion
+
+        #region Public Properties
+
         public Player CurrentPlayer { get; set; }
-        public Location CurrentLocation 
+        public Location CurrentLocation
         {
-            get { return _currentLocation; } 
+            get { return _currentLocation; }
             set
             {
                 _currentLocation = value;
@@ -71,10 +84,18 @@ namespace Engine.ViewModels
 
                 OnPropertyChanged(nameof(CurrentMonster));
                 OnPropertyChanged(nameof(HasMonster));
+
+                if (CurrentMonster != null)
+                {
+                    RaiseMessage("");
+                    RaiseMessage($"You see a {CurrentMonster.Name} here!");
+                }
             }
         }
 
         public bool HasMonster => CurrentMonster != null;
+
+        #endregion
 
         public GameSession()
         {
@@ -85,9 +106,11 @@ namespace Engine.ViewModels
             CurrentLocation = CurrentWorld.LocationAt(0, 0);
         }
 
+        #region Public Methods
+
         public void Move(string direction)
         {
-            switch(direction)
+            switch (direction)
             {
                 case "North":
                     if (CanMoveNorth)
@@ -109,7 +132,7 @@ namespace Engine.ViewModels
                     break;
                 case "South":
                     if (CanMoveSouth)
-                    {   
+                    {
                         CurrentLocation = CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate - 1);
                     }
                     break;
@@ -117,6 +140,10 @@ namespace Engine.ViewModels
                     break;
             }
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void GivePlayerQuests()
         {
@@ -133,5 +160,12 @@ namespace Engine.ViewModels
         {
             CurrentMonster = CurrentLocation.GetMonster();
         }
+
+        private void RaiseMessage(string message)
+        {
+            OnMessageRaised?.Invoke(this, new GameMessageEventArgs(message));
+        }
+
+        #endregion
     }
 }
