@@ -16,6 +16,7 @@ namespace Engine.Models
         public string ImageName { get; set; }
         public List<Quest> AvailableQuests { get; set; } = new();
         public List<MonsterEncounter> MonstersHere { get; set; } = new();
+        public Trader Trader { get; set; }
 
         public Location(int xCoordinate, int yCoordinate, string name, string description, string imageName)
         {
