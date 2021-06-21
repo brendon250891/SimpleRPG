@@ -41,17 +41,14 @@ namespace Engine.Models
 
         #endregion
 
-        public Player(string name, string characterClass, int hitPoints, int experiencePoints, int level, int gold)
+        public Player(string name, string characterClass, int maximumHitPoints, int currentHitPoints, int experiencePoints, int level, int gold) 
+            : base(name, maximumHitPoints, currentHitPoints, gold)
         {
-            Name = name;
             CharacterClass = characterClass;
             ExperiencePoints = experiencePoints;
-            MaximumHitPoints = hitPoints;
-            CurrentHitPoints = hitPoints;
             Level = level;
-            Gold = gold;
 
-            Quests = new();
+            Quests = new ObservableCollection<QuestStatus>();
         }
 
         #region Public Methods
@@ -69,19 +66,9 @@ namespace Engine.Models
             return true;
         }
 
-        public void AddExperiencePoints(int experiencePoints)
+        public void GainExperience(int experiencePoints)
         {
             ExperiencePoints += experiencePoints;
-        }
-
-        public void AddGold(int gold)
-        {
-            Gold += gold;
-        }
-
-        public void MakePurchase(int purchaseAmount)
-        {
-            Gold -= purchaseAmount;
         }
 
         #endregion

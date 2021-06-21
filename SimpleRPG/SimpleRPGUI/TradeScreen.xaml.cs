@@ -47,7 +47,7 @@ namespace SimpleRPGUI
             {
                 if (Session.CurrentPlayer.Gold >= groupedInventoryItem.Item.Price)
                 {
-                    Session.CurrentPlayer.MakePurchase(groupedInventoryItem.Item.Price);
+                    Session.CurrentPlayer.SpendGold(groupedInventoryItem.Item.Price);
                     Session.CurrentPlayer.AddItemToInventory(groupedInventoryItem.Item);
                     Session.CurrentTrader.RemoveItemFromInventory(groupedInventoryItem.Item);
                 }
