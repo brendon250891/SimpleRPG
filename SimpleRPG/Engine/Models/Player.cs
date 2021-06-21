@@ -126,6 +126,11 @@ namespace Engine.Models
             HitPoints = hitPoints;
         }
 
+        public void MakePurchase(int purchaseAmount)
+        {
+            Gold -= purchaseAmount;
+        }
+
         #endregion
     }
 }

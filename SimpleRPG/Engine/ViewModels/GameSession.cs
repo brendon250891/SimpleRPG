@@ -44,6 +44,7 @@ namespace Engine.ViewModels
                 CompleteQuestsAtLocation();
                 GivePlayerQuests();
                 GetMonsterAtLocation();
+                CurrentTrader = CurrentLocation.Trader;
             }
         }
         public World CurrentWorld { get; set; }
