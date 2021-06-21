@@ -40,6 +40,11 @@ namespace SimpleRPGUI
             _gameSession.Move((sender as Button).Content.ToString());
         }
 
+        private void OnClick_AttackMonster(object sender, RoutedEventArgs e)
+        {
+            _gameSession.AttackCurrentMonster();
+        }
+
         private void GetKeyboardInput(object sender, KeyEventArgs e)
         {
             switch(e.Key)
