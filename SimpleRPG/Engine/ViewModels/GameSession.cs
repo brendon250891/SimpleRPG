@@ -46,35 +46,6 @@ namespace Engine.ViewModels
         }
         public World CurrentWorld { get; set; }
         public Weapon CurrentWeapon { get; set; }
-        public bool CanMoveNorth
-        {
-            get
-            {
-                return CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate + 1) != null;
-            }
-        }
-        public bool CanMoveWest
-        {
-            get
-            {
-                return CurrentWorld.LocationAt(CurrentLocation.XCoordinate - 1, CurrentLocation.YCoordinate) != null;
-            }
-        }
-        public bool CanMoveEast
-        {
-            get
-            {
-                return CurrentWorld.LocationAt(CurrentLocation.XCoordinate + 1, CurrentLocation.YCoordinate) != null;
-            }
-        }
-        public bool CanMoveSouth
-        {
-            get
-            {
-                return CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate - 1) != null;
-            }
-        }
-
         public Monster CurrentMonster
         {
             get { return _currentMonster; }
@@ -92,7 +63,10 @@ namespace Engine.ViewModels
                 }
             }
         }
-
+        public bool CanMoveNorth => CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate + 1) != null;
+        public bool CanMoveWest => CurrentWorld.LocationAt(CurrentLocation.XCoordinate - 1, CurrentLocation.YCoordinate) != null;
+        public bool CanMoveEast => CurrentWorld.LocationAt(CurrentLocation.XCoordinate + 1, CurrentLocation.YCoordinate) != null;
+        public bool CanMoveSouth => CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate - 1) != null;
         public bool HasMonster => CurrentMonster != null;
 
         #endregion
