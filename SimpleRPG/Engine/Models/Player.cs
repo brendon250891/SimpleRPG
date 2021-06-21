@@ -4,30 +4,20 @@ using System.Linq;
 
 namespace Engine.Models
 {
-    public class Player : BaseNotification
+    public class Player : LivingEntity
     {
         #region Private Properties
 
         private int _experiencePoints;
-        private int _hitPoints;
+
         private int _level;
-        private int _gold;
 
         #endregion
 
         #region Public Properties
 
-        public string Name { get; set; }
         public string CharacterClass { get; set; }
-        public int HitPoints
-        {
-            get { return _hitPoints; }
-            set
-            {
-                _hitPoints = value;
-                OnPropertyChanged(nameof(HitPoints));
-            }
-        }
+
         public int ExperiencePoints
         {
             get { return _experiencePoints; }
@@ -46,21 +36,8 @@ namespace Engine.Models
                 OnPropertyChanged(nameof(Level));
             }
         }
-        public int Gold
-        {
-            get { return _gold; }
-            set
-            {
-                _gold = value;
-                OnPropertyChanged(nameof(Gold));
-            }
-        }
-
-        public ObservableCollection<GameItem> Inventory { get; set; }
 
         public ObservableCollection<QuestStatus> Quests { get; set; }
-
-        public List<GameItem> Weapons => Inventory.Where(gameItem => gameItem is Weapon).ToList();
 
         #endregion
 
@@ -68,30 +45,16 @@ namespace Engine.Models
         {
             Name = name;
             CharacterClass = characterClass;
-            HitPoints = hitPoints;
             ExperiencePoints = experiencePoints;
+            MaximumHitPoints = hitPoints;
+            CurrentHitPoints = hitPoints;
             Level = level;
             Gold = gold;
 
-            Inventory = new();
             Quests = new();
         }
 
         #region Public Methods
-
-        public void AddItemToInventory(GameItem item)
-        {
-            Inventory.Add(item);
-
-            OnPropertyChanged(nameof(Weapons));
-        }
-
-        public void RemoveItemFromInventory(GameItem item)
-        {
-            Inventory.Remove(item);
-
-            OnPropertyChanged(nameof(Weapons));
-        }
 
         public bool HasAllItems(List<ItemQuantity> items)
         {
@@ -114,16 +77,6 @@ namespace Engine.Models
         public void AddGold(int gold)
         {
             Gold += gold;
-        }
-
-        public void TakeDamage(int damage)
-        {
-            HitPoints -= damage;
-        }
-
-        public void Respawn(int hitPoints)
-        {
-            HitPoints = hitPoints;
         }
 
         public void MakePurchase(int purchaseAmount)

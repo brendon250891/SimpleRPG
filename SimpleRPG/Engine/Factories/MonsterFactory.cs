@@ -14,21 +14,21 @@ namespace Engine.Factories
             switch(monsterID)
             {
                 case 1:
-                    Monster snake = new("Snake", "Snake", 4, 4, 1, 2, 5, 1);
+                    Monster snake = new("Snake", "Snake", 4, 1, 2, 5, 1);
                     AddLootItem(snake, 9001, 25);
                     AddLootItem(snake, 9002, 75);
 
                     return snake;
 
                 case 2:
-                    Monster rat = new("Rat", "Rat", 5, 5, 1, 2, 5, 1);
+                    Monster rat = new("Rat", "Rat", 5, 1, 2, 5, 1);
                     AddLootItem(rat, 9003, 25);
                     AddLootItem(rat, 9004, 75);
 
                     return rat;
 
                 case 3:
-                    Monster giantSpider = new("Giant Spider", "GiantSpider", 10, 10, 1, 4, 10, 3);
+                    Monster giantSpider = new("Giant Spider", "GiantSpider", 10, 1, 4, 10, 3);
                     AddLootItem(giantSpider, 9005, 25);
                     AddLootItem(giantSpider, 9006, 25);
 
@@ -43,7 +43,7 @@ namespace Engine.Factories
         {
             if (RandomNumberGenerator.NumberBetween(1, 100) <= percentage)
             {
-                monster.Inventory.Add(new ItemQuantity(itemID, 1));
+                monster.AddItemToInventory(ItemFactory.CreateGameItem(itemID));
             }
         }
     }

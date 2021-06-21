@@ -152,12 +152,12 @@ namespace Engine.ViewModels
             }
             else
             {
-                CurrentMonster.TakeDamage(damageToMonster);
+                CurrentMonster.Damage(damageToMonster);
                 RaiseMessage($"You hit the {CurrentMonster.Name} for {damageToMonster} points.");
             }
 
             // If the monster was killed, collect all loot and experience.
-            if (CurrentMonster.HitPoints <= 0)
+            if (!CurrentMonster.IsAlive())
             {
                 RaiseMessage("");
                 RaiseMessage($"You defeated the {CurrentMonster.Name}");
@@ -165,14 +165,13 @@ namespace Engine.ViewModels
                 CurrentPlayer.AddExperiencePoints(CurrentMonster.RewardExperiencePoints);
                 RaiseMessage($"You receive {CurrentMonster.RewardExperiencePoints} experience points.");
 
-                CurrentPlayer.AddGold(CurrentMonster.RewardGold);
-                RaiseMessage($"You receive {CurrentMonster.RewardGold} gold.");
+                CurrentPlayer.AddGold(CurrentMonster.Gold);
+                RaiseMessage($"You receive {CurrentMonster.Gold} gold.");
 
-                foreach(ItemQuantity itemQuantity in CurrentMonster.Inventory)
+                foreach(GameItem gameItem in CurrentMonster.Inventory)
                 {
-                    GameItem item = ItemFactory.CreateGameItem(itemQuantity.ItemID);
-                    CurrentPlayer.AddItemToInventory(item);
-                    RaiseMessage($"You receive {itemQuantity.Quantity} {item.Name}.");
+                    CurrentPlayer.AddItemToInventory(gameItem);
+                    RaiseMessage($"You receive one {gameItem.Name}.");
                 }
 
                 // Get a new monster to fight
@@ -188,18 +187,18 @@ namespace Engine.ViewModels
                 }
                 else
                 {
-                    CurrentPlayer.TakeDamage(damageToPlayer);
+                    CurrentPlayer.Damage(damageToPlayer);
                     RaiseMessage($"{CurrentMonster.Name} hit you for {damageToPlayer} points.");
                 }
 
                 // If the player is killed, respawn them back at their house.
-                if (CurrentPlayer.HitPoints <= 0)
+                if (!CurrentPlayer.IsAlive())
                 {
                     RaiseMessage("");
                     RaiseMessage($"{CurrentMonster.Name} killed you.");
 
                     CurrentLocation = CurrentWorld.LocationAt(0, -1);
-                    CurrentPlayer.Respawn(CurrentPlayer.Level * 10);
+                    CurrentPlayer.Respawn();
                 }
             }
         }
