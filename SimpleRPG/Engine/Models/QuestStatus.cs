@@ -16,5 +16,10 @@ namespace Engine.Models
             PlayerQuest = quest;
             IsCompleted = false;
         }
+
+        public void Complete()
+        {
+            IsCompleted = true;
+        }
     }
 }
