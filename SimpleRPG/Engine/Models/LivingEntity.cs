@@ -9,6 +9,11 @@ namespace Engine.Models
 {
     public abstract class LivingEntity : BaseNotification
     {
+        #region Events
+
+        public event EventHandler OnKilled;
+
+        #endregion
         #region Private Properties
 
         private string _name;
@@ -26,7 +31,7 @@ namespace Engine.Models
         public string Name
         {
             get { return _name; }
-            set
+            private set
             {
                 _name = value;
 
@@ -37,7 +42,7 @@ namespace Engine.Models
         public int CurrentHitPoints
         {
             get { return _currentHitPoints; }
-            set
+            private set
             {
                 _currentHitPoints = value;
 
@@ -48,7 +53,7 @@ namespace Engine.Models
         public int MaximumHitPoints
         {
             get { return _maximumHitPoints; }
-            set
+            private set
             {
                 _maximumHitPoints = value;
 
@@ -59,7 +64,7 @@ namespace Engine.Models
         public int Gold
         {
             get { return _gold; }
-            set
+            private set
             {
                 _gold = value;
 
@@ -73,10 +78,17 @@ namespace Engine.Models
 
         public List<GameItem> Weapons => Inventory.Where(item => item is Weapon).ToList();
 
+        public bool IsDead => CurrentHitPoints <= 0;
+
         #endregion
 
-        protected LivingEntity()
+        protected LivingEntity(string name, int maximumHitPoints, int currentHitPoints, int gold)
         {
+            Name = name;
+            MaximumHitPoints = maximumHitPoints;
+            CurrentHitPoints = currentHitPoints;
+            Gold = gold;
+
             Inventory = new ObservableCollection<GameItem>();
             GroupedInventory = new ObservableCollection<GroupedInventoryItem>();
         }
@@ -125,19 +137,49 @@ namespace Engine.Models
             OnPropertyChanged(nameof(Weapons));
         }
 
-        public bool IsAlive()
+        public void TakeDamage(int damage)
         {
-            return CurrentHitPoints > 0;
+            CurrentHitPoints -= damage;
+
+            if (IsDead)
+            {
+                CurrentHitPoints = 0;
+                RaiseOnKilledEvent();
+            }
         }
 
-        public void Respawn()
+        public void Heal(int hitPointsToHeal)
+        {
+            CurrentHitPoints = CurrentHitPoints > MaximumHitPoints ? MaximumHitPoints : CurrentHitPoints + hitPointsToHeal;
+        }
+
+        public void CompletelyHeal()
         {
             CurrentHitPoints = MaximumHitPoints;
         }
 
-        public void Damage(int damage)
+        public void AddGold(int amountOfGold)
         {
-            CurrentHitPoints -= damage;
+            Gold += amountOfGold;
+        }
+
+        public void SpendGold(int amountOfGold)
+        {
+            if (amountOfGold > Gold)
+            {
+                throw new ArgumentOutOfRangeException($"{Name} only has {Gold} gold to spend!");
+            }
+
+            Gold -= amountOfGold;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void RaiseOnKilledEvent()
+        {
+            OnKilled?.Invoke(this, new System.EventArgs());
         }
 
         #endregion

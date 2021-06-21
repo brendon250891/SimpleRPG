@@ -20,6 +20,7 @@ namespace Engine.ViewModels
 
         #region Private Properties
 
+        private Player _currentPlayer;
         private Location _currentLocation;
         private Monster _currentMonster;
         private Trader _currentTrader;
@@ -28,7 +29,24 @@ namespace Engine.ViewModels
 
         #region Public Properties
 
-        public Player CurrentPlayer { get; set; }
+        public Player CurrentPlayer 
+        { 
+            get { return _currentPlayer; }
+            set
+            {
+                if (_currentPlayer != null)
+                {
+                    _currentPlayer.OnKilled -= OnCurrentPlayerKilled;
+                }
+
+                _currentPlayer = value;
+
+                if (_currentPlayer != null)
+                {
+                    _currentPlayer.OnKilled += OnCurrentPlayerKilled;
+                }
+            }
+        }
         public Location CurrentLocation
         {
             get { return _currentLocation; }
@@ -54,16 +72,23 @@ namespace Engine.ViewModels
             get { return _currentMonster; }
             set
             {
+                if (_currentMonster != null)
+                {
+                    _currentMonster.OnKilled -= OnCurrentMonsterKilled;
+                }
+
                 _currentMonster = value;
 
-                OnPropertyChanged(nameof(CurrentMonster));
-                OnPropertyChanged(nameof(HasMonster));
-
-                if (CurrentMonster != null)
+                if (_currentMonster != null)
                 {
+                    _currentMonster.OnKilled += OnCurrentMonsterKilled;
+
                     RaiseMessage("");
                     RaiseMessage($"You see a {CurrentMonster.Name} here!");
                 }
+
+                OnPropertyChanged(nameof(CurrentMonster));
+                OnPropertyChanged(nameof(HasMonster));
             }
         }
         public Trader CurrentTrader
@@ -88,7 +113,7 @@ namespace Engine.ViewModels
 
         public GameSession()
         {
-            CurrentPlayer = new Player("Brendon", "Fighter", 10, 0, 1, 1000000);
+            CurrentPlayer = new Player("Brendon", "Fighter", 10, 10, 0, 1, 1000000);
 
             if (!CurrentPlayer.Weapons.Any())
             {
@@ -152,29 +177,12 @@ namespace Engine.ViewModels
             }
             else
             {
-                CurrentMonster.Damage(damageToMonster);
-                RaiseMessage($"You hit the {CurrentMonster.Name} for {damageToMonster} points.");
+                RaiseMessage($"You hit the {CurrentMonster.Name} for {damageToMonster} points.");             
+                CurrentMonster.TakeDamage(damageToMonster);
             }
 
-            // If the monster was killed, collect all loot and experience.
-            if (!CurrentMonster.IsAlive())
+            if (CurrentMonster.IsDead)
             {
-                RaiseMessage("");
-                RaiseMessage($"You defeated the {CurrentMonster.Name}");
-
-                CurrentPlayer.AddExperiencePoints(CurrentMonster.RewardExperiencePoints);
-                RaiseMessage($"You receive {CurrentMonster.RewardExperiencePoints} experience points.");
-
-                CurrentPlayer.AddGold(CurrentMonster.Gold);
-                RaiseMessage($"You receive {CurrentMonster.Gold} gold.");
-
-                foreach(GameItem gameItem in CurrentMonster.Inventory)
-                {
-                    CurrentPlayer.AddItemToInventory(gameItem);
-                    RaiseMessage($"You receive one {gameItem.Name}.");
-                }
-
-                // Get a new monster to fight
                 GetMonsterAtLocation();
             }
             else
@@ -187,18 +195,8 @@ namespace Engine.ViewModels
                 }
                 else
                 {
-                    CurrentPlayer.Damage(damageToPlayer);
                     RaiseMessage($"{CurrentMonster.Name} hit you for {damageToPlayer} points.");
-                }
-
-                // If the player is killed, respawn them back at their house.
-                if (!CurrentPlayer.IsAlive())
-                {
-                    RaiseMessage("");
-                    RaiseMessage($"{CurrentMonster.Name} killed you.");
-
-                    CurrentLocation = CurrentWorld.LocationAt(0, -1);
-                    CurrentPlayer.Respawn();
+                    CurrentPlayer.TakeDamage(damageToPlayer);
                 }
             }
         }
@@ -259,7 +257,7 @@ namespace Engine.ViewModels
                         RaiseMessage($"You completed the quest: {quest.Name}");
 
                         // Give the player their rewards.
-                        CurrentPlayer.AddExperiencePoints(quest.RewardExperiencePoints);
+                        CurrentPlayer.GainExperience(quest.RewardExperiencePoints);
                         RaiseMessage($"You receive {quest.RewardExperiencePoints} experience points.");
 
                         CurrentPlayer.AddGold(quest.RewardGold);
@@ -287,6 +285,33 @@ namespace Engine.ViewModels
         private void RaiseMessage(string message)
         {
             OnMessageRaised?.Invoke(this, new GameMessageEventArgs(message));
+        }
+
+        private void OnCurrentPlayerKilled(object sender, System.EventArgs e)
+        {
+            RaiseMessage("");
+            RaiseMessage($"The {CurrentMonster.Name} killed you.");
+
+            CurrentLocation = CurrentWorld.LocationAt(0, -1);
+            CurrentPlayer.CompletelyHeal();
+        }
+
+        private void OnCurrentMonsterKilled(object sender, System.EventArgs e)
+        {
+            RaiseMessage("");
+            RaiseMessage($"You defeated the {CurrentMonster.Name}");
+
+            RaiseMessage($"You receive {CurrentMonster.RewardExperiencePoints} experience points.");
+            CurrentPlayer.GainExperience(CurrentMonster.RewardExperiencePoints);
+
+            RaiseMessage($"You receive {CurrentMonster.Gold} gold.");
+            CurrentPlayer.AddGold(CurrentMonster.Gold);
+
+            foreach (GameItem gameItem in CurrentMonster.Inventory)
+            {
+                RaiseMessage($"You receive one {gameItem.Name}");
+                CurrentPlayer.AddItemToInventory(gameItem);
+            }
         }
 
         #endregion

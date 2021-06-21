@@ -14,16 +14,13 @@
 
         #endregion
 
-        public Monster(string name, string imageName, int maximumHitPoints, int minimumDamage, int maximumDamage, int rewardExperiencePoints, int gold)
+        public Monster(string name, string imageName, int maximumHitPoints, int currentHitPoints, int minimumDamage, int maximumDamage, int rewardExperiencePoints, int gold) 
+            : base(name, maximumHitPoints, currentHitPoints, gold)
         {
-            Name = name;
             ImageName = $"pack://application:,,,/Engine;component/Images/Monsters/{imageName}.png";
-            MaximumHitPoints = maximumHitPoints;
-            CurrentHitPoints = maximumHitPoints;
             RewardExperiencePoints = rewardExperiencePoints;
             MinimumDamage = minimumDamage;
-            MaximumDamage = maximumDamage;
-            Gold = gold;
+            MaximumDamage = maximumDamage;            
         }
     } 
 }
