@@ -24,6 +24,8 @@ namespace Engine.Models
 
         private int _gold;
 
+        private int _level;
+
         #endregion
 
         #region Public Properties
@@ -53,7 +55,7 @@ namespace Engine.Models
         public int MaximumHitPoints
         {
             get { return _maximumHitPoints; }
-            private set
+            protected set
             {
                 _maximumHitPoints = value;
 
@@ -72,6 +74,17 @@ namespace Engine.Models
             }
         }
 
+        public int Level
+        {
+            get { return _level; }
+            protected set
+            {
+                _level = value;
+
+                OnPropertyChanged(nameof(Level));
+            }
+        }
+
         public ObservableCollection<GameItem> Inventory { get; set; }
 
         public ObservableCollection<GroupedInventoryItem> GroupedInventory { get; set; }
@@ -82,12 +95,13 @@ namespace Engine.Models
 
         #endregion
 
-        protected LivingEntity(string name, int maximumHitPoints, int currentHitPoints, int gold)
+        protected LivingEntity(string name, int maximumHitPoints, int currentHitPoints, int gold, int level = 1)
         {
             Name = name;
             MaximumHitPoints = maximumHitPoints;
             CurrentHitPoints = currentHitPoints;
             Gold = gold;
+            Level = level;
 
             Inventory = new ObservableCollection<GameItem>();
             GroupedInventory = new ObservableCollection<GroupedInventoryItem>();
@@ -119,7 +133,7 @@ namespace Engine.Models
         public void RemoveItemFromInventory(GameItem item)
         {
             Inventory.Remove(item);
-            
+
             GroupedInventoryItem groupedInventoryItemToRemove = GroupedInventory.FirstOrDefault(gi => item.IsUnique ? gi.Item == item : gi.Item.ItemTypeID == item.ItemTypeID);
 
             if (groupedInventoryItemToRemove != null)
