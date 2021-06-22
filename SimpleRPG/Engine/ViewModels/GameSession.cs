@@ -37,6 +37,7 @@ namespace Engine.ViewModels
                 if (_currentPlayer != null)
                 {
                     _currentPlayer.OnKilled -= OnCurrentPlayerKilled;
+                    _currentPlayer.OnLeveledUp -= OnCurrentPlayerLeveledUp;
                 }
 
                 _currentPlayer = value;
@@ -44,6 +45,7 @@ namespace Engine.ViewModels
                 if (_currentPlayer != null)
                 {
                     _currentPlayer.OnKilled += OnCurrentPlayerKilled;
+                    _currentPlayer.OnLeveledUp += OnCurrentPlayerLeveledUp;
                 }
             }
         }
@@ -257,18 +259,18 @@ namespace Engine.ViewModels
                         RaiseMessage($"You completed the quest: {quest.Name}");
 
                         // Give the player their rewards.
-                        CurrentPlayer.GainExperience(quest.RewardExperiencePoints);
                         RaiseMessage($"You receive {quest.RewardExperiencePoints} experience points.");
+                        CurrentPlayer.GainExperience(quest.RewardExperiencePoints);
 
-                        CurrentPlayer.AddGold(quest.RewardGold);
                         RaiseMessage($"You receive {quest.RewardGold} gold.");
+                        CurrentPlayer.AddGold(quest.RewardGold);
 
                         foreach (ItemQuantity itemQuantity in quest.RewardItems)
                         {
                             GameItem rewardItem = ItemFactory.CreateGameItem(itemQuantity.ItemID);
 
-                            CurrentPlayer.AddItemToInventory(rewardItem);
                             RaiseMessage($"You receive {rewardItem.Name}");
+                            CurrentPlayer.AddItemToInventory(rewardItem);
                         }
 
                         questToComplete.Complete();
@@ -314,6 +316,10 @@ namespace Engine.ViewModels
             }
         }
 
+        private void OnCurrentPlayerLeveledUp(object sender, System.EventArgs e)
+        {
+            RaiseMessage($"You are now level {CurrentPlayer.Level}!");
+        }
         #endregion
     }
 }
