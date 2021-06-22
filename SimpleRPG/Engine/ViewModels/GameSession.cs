@@ -55,7 +55,7 @@ namespace Engine.ViewModels
             set
             {
                 _currentLocation = value;
-                OnPropertyChanged(nameof(CurrentLocation));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(CanMoveNorth));
                 OnPropertyChanged(nameof(CanMoveWest));
                 OnPropertyChanged(nameof(CanMoveEast));
@@ -67,7 +67,7 @@ namespace Engine.ViewModels
                 CurrentTrader = CurrentLocation.Trader;
             }
         }
-        public World CurrentWorld { get; set; }
+        public World CurrentWorld { get; }
         public Weapon CurrentWeapon { get; set; }
         public Monster CurrentMonster
         {
@@ -89,7 +89,7 @@ namespace Engine.ViewModels
                     RaiseMessage($"You see a {CurrentMonster.Name} here!");
                 }
 
-                OnPropertyChanged(nameof(CurrentMonster));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(HasMonster));
             }
         }
@@ -100,7 +100,7 @@ namespace Engine.ViewModels
             {
                 _currentTrader = value;
 
-                OnPropertyChanged(nameof(CurrentTrader));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(HasTrader));
             }
         }
