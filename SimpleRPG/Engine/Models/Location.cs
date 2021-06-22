@@ -9,14 +9,18 @@ namespace Engine.Models
 {
     public class Location
     {
-        public int XCoordinate { get; set; }
-        public int YCoordinate { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string ImageName { get; set; }
-        public List<Quest> AvailableQuests { get; set; } = new();
-        public List<MonsterEncounter> MonstersHere { get; set; } = new();
+        #region Public Properties
+
+        public int XCoordinate { get; }
+        public int YCoordinate { get; }
+        public string Name { get; }
+        public string Description { get; }
+        public string ImageName { get; }
+        public List<Quest> AvailableQuests { get; } = new();
+        public List<MonsterEncounter> MonstersHere { get; } = new();
         public Trader Trader { get; set; }
+
+        #endregion
 
         public Location(int xCoordinate, int yCoordinate, string name, string description, string imageName)
         {
@@ -26,6 +30,8 @@ namespace Engine.Models
             Description = description;
             ImageName = $"pack://application:,,,/Engine;component/Images/Locations/{imageName}.png";
         }
+
+        #region Public Methods
 
         public void AddMonster(int monsterID, int chanceOfEncountering)
         {
@@ -64,5 +70,7 @@ namespace Engine.Models
 
             return MonsterFactory.GetMonster(MonstersHere.Last().MonsterID);
         }
+
+        #endregion
     }
 }

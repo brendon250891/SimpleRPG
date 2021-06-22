@@ -6,10 +6,29 @@ using System.Threading.Tasks;
 
 namespace Engine.Models
 {
-    public class QuestStatus
+    public class QuestStatus : BaseNotification
     {
-        public Quest PlayerQuest { get; set; }
-        public bool IsCompleted { get; set; }
+        #region Private Properties
+
+        private bool _isCompleted;
+
+        #endregion
+
+        #region Public Properties
+
+        public Quest PlayerQuest { get; }
+        public bool IsCompleted 
+        {
+            get { return _isCompleted; }
+            set
+            {
+                _isCompleted = value;
+
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
 
         public QuestStatus(Quest quest)
         {
@@ -17,9 +36,13 @@ namespace Engine.Models
             IsCompleted = false;
         }
 
+        #region Public Methods
+
         public void Complete()
         {
             IsCompleted = true;
         }
+
+        #endregion
     }
 }
