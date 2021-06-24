@@ -8,7 +8,15 @@ namespace Engine.Models
 {
     public class GameItem
     {
+        public enum ItemCategory
+        {
+            Miscellaneous,
+            Weapon
+        }
+
         #region Public Properties
+
+        public ItemCategory Category { get; }
 
         public int ItemTypeID { get; }
 
@@ -18,19 +26,26 @@ namespace Engine.Models
 
         public bool IsUnique { get; }
 
+        public int MinimumDamage { get; }
+
+        public int MaximumDamage { get; }
+
         #endregion
 
-        public GameItem(int itemTypeID, string name, int price, bool isUnique = false)
+        public GameItem(ItemCategory category, int itemTypeID, string name, int price, bool isUnique = false, int minimumDamage = 0, int maximumDamage = 0)
         {
+            Category = category;
             ItemTypeID = itemTypeID;
             Name = name;
             Price = price;
             IsUnique = isUnique;
+            MinimumDamage = minimumDamage;
+            MaximumDamage = maximumDamage;
         }
 
         public GameItem Clone()
         {
-            return new GameItem(ItemTypeID, Name, Price, IsUnique);
+            return new GameItem(Category, ItemTypeID, Name, Price, IsUnique, MinimumDamage, MaximumDamage);
         }
     }
 }

@@ -68,7 +68,7 @@ namespace Engine.ViewModels
             }
         }
         public World CurrentWorld { get; }
-        public Weapon CurrentWeapon { get; set; }
+        public GameItem CurrentWeapon { get; set; }
         public Monster CurrentMonster
         {
             get { return _currentMonster; }

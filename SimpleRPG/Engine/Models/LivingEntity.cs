@@ -89,7 +89,7 @@ namespace Engine.Models
 
         public ObservableCollection<GroupedInventoryItem> GroupedInventory { get; }
 
-        public List<GameItem> Weapons => Inventory.Where(item => item is Weapon).ToList();
+        public List<GameItem> Weapons => Inventory.Where(item => item.Category == GameItem.ItemCategory.Weapon).ToList();
 
         public bool IsDead => CurrentHitPoints <= 0;
 
