@@ -171,9 +171,10 @@
             </Grid.ColumnDefinitions>
             
             <!-- Attack -->
-            <Grid Grid.Row="0" Grid.Column="0" Visibility="{Binding HasMonster, Converter={StaticResource BooleanToVisibility}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="10" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
@@ -183,9 +184,14 @@
                 </Grid.ColumnDefinitions>
 
                 <ComboBox Grid.Row="0" Grid.Column="0" ItemsSource="{Binding CurrentPlayer.Weapons}" SelectedItem="{Binding CurrentPlayer.CurrentWeapon}" DisplayMemberPath="Name" 
-                          SelectedValuePath="ItemTypeID" />
+                          Visibility="{Binding HasMonster, Converter={StaticResource BooleanToVisibility}}" />
 
-                <Button Grid.Row="0" Grid.Column="2" Content="Use" Click="OnClick_AttackMonster" />
+                <Button Grid.Row="0" Grid.Column="2" Content="Use" Click="OnClick_AttackMonster" Visibility="{Binding HasMonster, Converter={StaticResource BooleanToVisibility}}" />
+
+                <ComboBox Grid.Row="2" Grid.Column="0" ItemsSource="{Binding CurrentPlayer.Consumables}" SelectedItem="{Binding CurrentPlayer.CurrentConsumable}" 
+                          DisplayMemberPath="Name" Visibility="{Binding CurrentPlayer.HasConsumable, Converter={StaticResource BooleanToVisibility}}" />
+
+                <Button Grid.Row="2" Grid.Column="2" Content="Use" Click="OnClick_UseCurrentConsumable" Visibility="{Binding CurrentPlayer.HasConsumable, Converter={StaticResource BooleanToVisibility}}" />
             </Grid>
             
             <!-- Movement -->

@@ -81,5 +81,10 @@ namespace SimpleRPGUI
             tradeScreen.DataContext = _gameSession;
             tradeScreen.ShowDialog();
         }
+
+        private void OnClick_UseCurrentConsumable(object sender, RoutedEventArgs e)
+        {
+            _gameSession.UseCurrentConsumable();
+        }
     }
 }

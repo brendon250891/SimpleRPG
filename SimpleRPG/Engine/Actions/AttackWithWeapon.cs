@@ -52,11 +52,11 @@ namespace Engine.Actions
             int damage = RandomNumberGenerator.NumberBetween(_minimumDamage, _maximumDamage);
 
             string actorName = (actor is Player) ? "You" : $"The {actor.Name}";
-            string targetName = (target is Player) ? "you" : $"the {actor.Name}";
+            string targetName = (target is Player) ? "you" : $"the {target.Name}";
 
             if (damage == 0)
             {
-                ReportResult($"{actorName} missed the {targetName}.");
+                ReportResult($"{actorName} missed {targetName}.");
             }
             else
             {
