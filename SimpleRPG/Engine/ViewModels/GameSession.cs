@@ -29,8 +29,8 @@ namespace Engine.ViewModels
 
         #region Public Properties
 
-        public Player CurrentPlayer 
-        { 
+        public Player CurrentPlayer
+        {
             get { return _currentPlayer; }
             set
             {
@@ -78,6 +78,7 @@ namespace Engine.ViewModels
             {
                 if (_currentMonster != null)
                 {
+                    _currentMonster.OnActionPerformed -= OnCurrentMonsterPerformedAction;
                     _currentMonster.OnKilled -= OnCurrentMonsterKilled;
                 }
 
@@ -85,6 +86,7 @@ namespace Engine.ViewModels
 
                 if (_currentMonster != null)
                 {
+                    _currentMonster.OnActionPerformed += OnCurrentMonsterPerformedAction;
                     _currentMonster.OnKilled += OnCurrentMonsterKilled;
 
                     RaiseMessage("");
@@ -180,17 +182,7 @@ namespace Engine.ViewModels
             }
             else
             {
-                int damageToPlayer = RandomNumberGenerator.NumberBetween(CurrentMonster.MinimumDamage, CurrentMonster.MaximumDamage);
-
-                if (damageToPlayer == 0)
-                {
-                    RaiseMessage($"{CurrentMonster.Name} attacks, but misses!");
-                }
-                else
-                {
-                    RaiseMessage($"{CurrentMonster.Name} hit you for {damageToPlayer} points.");
-                    CurrentPlayer.TakeDamage(damageToPlayer);
-                }
+                CurrentMonster.UseCurrentWeaponOn(CurrentPlayer);
             }
         }
 
@@ -211,7 +203,7 @@ namespace Engine.ViewModels
                     RaiseMessage(quest.Description);
 
                     RaiseMessage("Return with:");
-                    foreach(ItemQuantity itemQuantity in quest.ItemsNeeded)
+                    foreach (ItemQuantity itemQuantity in quest.ItemsNeeded)
                     {
                         RaiseMessage($"{itemQuantity.Quantity} - {ItemFactory.CreateGameItem(itemQuantity.ItemID).Name}");
                     }
@@ -313,6 +305,11 @@ namespace Engine.ViewModels
         }
 
         private void OnCurrentPlayerPerformedAction(object sender, string result)
+        {
+            RaiseMessage(result);
+        }
+
+        private void OnCurrentMonsterPerformedAction(object sender, string result)
         {
             RaiseMessage(result);
         }
