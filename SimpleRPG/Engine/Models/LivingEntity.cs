@@ -23,6 +23,8 @@ namespace Engine.Models
 
         private GameItem _currentWeapon;
 
+        private GameItem _currentConsumable;
+
         #endregion
 
         #region Public Properties
@@ -103,13 +105,38 @@ namespace Engine.Models
             }
         }
 
+        public GameItem CurrentConsumable
+        {
+            get { return _currentConsumable; }
+            set
+            {
+                if (_currentConsumable != null)
+                {
+                    _currentConsumable.Action.OnActionPerformed -= RaiseActionPerformedEvent;
+                }
+
+                _currentConsumable = value;
+
+                if (_currentConsumable != null)
+                {
+                    _currentConsumable.Action.OnActionPerformed += RaiseActionPerformedEvent;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<GameItem> Inventory { get; }
 
         public ObservableCollection<GroupedInventoryItem> GroupedInventory { get; }
 
         public List<GameItem> Weapons => Inventory.Where(item => item.Category == GameItem.ItemCategory.Weapon).ToList();
 
+        public List<GameItem> Consumables => Inventory.Where(item => item.Category == GameItem.ItemCategory.Consumable).ToList();
+
         public bool IsDead => CurrentHitPoints <= 0;
+
+        public bool HasConsumable => Consumables.Any();
 
         #endregion
 
@@ -154,6 +181,8 @@ namespace Engine.Models
             }
 
             OnPropertyChanged(nameof(Weapons));
+            OnPropertyChanged(nameof(Consumables));
+            OnPropertyChanged(nameof(HasConsumable));
         }
 
         public void RemoveItemFromInventory(GameItem item)
@@ -175,11 +204,20 @@ namespace Engine.Models
             }
 
             OnPropertyChanged(nameof(Weapons));
+            OnPropertyChanged(nameof(Consumables));
+            OnPropertyChanged(nameof(HasConsumable));
         }
 
         public void UseCurrentWeaponOn(LivingEntity target)
         {
             CurrentWeapon.PerformAction(this, target);
+        }
+
+        public void UseCurrentConsumable()
+        {
+            CurrentConsumable.PerformAction(this, this);
+            
+            RemoveItemFromInventory(CurrentConsumable);
         }
 
         public void TakeDamage(int damage)
