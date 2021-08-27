@@ -22,6 +22,10 @@ namespace Engine.Factories
 
             BuildHealingItem(2001, "Health Potion", 5, 2);
 
+            BuildMiscellaneousItem(3001, "Vial", 1);
+            BuildMiscellaneousItem(3002, "Berries", 2);
+            BuildMiscellaneousItem(3003, "Herbs", 2);
+
             BuildMiscellaneousItem(9001, "Snake Fang", 1);
             BuildMiscellaneousItem(9002, "Snakeskin", 2);
             BuildMiscellaneousItem(9003, "Rat tail", 1);

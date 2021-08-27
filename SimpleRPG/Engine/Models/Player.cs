@@ -31,6 +31,8 @@ namespace Engine.Models
 
         public ObservableCollection<QuestStatus> Quests { get; }
 
+        public ObservableCollection<Recipe> Recipes { get; }
+
         #endregion
 
         #region Events
@@ -39,7 +41,7 @@ namespace Engine.Models
 
         #endregion
 
-        public Player(string name, string characterClass, int maximumHitPoints, int currentHitPoints, int experiencePoints, int level, int gold) 
+        public Player(string name, string characterClass, int maximumHitPoints, int currentHitPoints, int experiencePoints, int level, int gold)
             : base(name, maximumHitPoints, currentHitPoints, gold)
         {
             CharacterClass = characterClass;
@@ -47,13 +49,14 @@ namespace Engine.Models
             Level = level;
 
             Quests = new ObservableCollection<QuestStatus>();
+            Recipes = new ObservableCollection<Recipe>();
         }
 
         #region Public Methods
 
         public bool HasAllItems(List<ItemQuantity> items)
         {
-            foreach(ItemQuantity item in items)
+            foreach (ItemQuantity item in items)
             {
                 if (Inventory.Count(i => i.ItemTypeID == item.ItemID) < item.Quantity)
                 {
@@ -67,6 +70,14 @@ namespace Engine.Models
         public void GainExperience(int experiencePoints)
         {
             ExperiencePoints += experiencePoints;
+        }
+
+        public void LearnRecipe(Recipe recipe)
+        {
+            if (!Recipes.Any(r => r.ID == recipe.ID))
+            {
+                Recipes.Add(recipe);
+            }
         }
 
         #endregion
