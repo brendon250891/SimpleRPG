@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GameItems>
+  <Weapons>
+    <Weapon ID="1001" Name="Pointy Stick" Price="1" MinimumDamage="1" MaximumDamage="2" />
+    <Weapon ID="1002" Name="Rusty Sword" Price="5" MinimumDamage="1" MaximumDamage="3" />
+    <Weapon ID="1501" Name="Snake Fang" Price="0" MinimumDamage="1" MaximumDamage="2" />
+    <Weapon ID="1502" Name="Rat Claw" Price="0" MinimumDamage="1" MaximumDamage="2" />
+    <Weapon ID="1503" Name="Spider Fang" Price="0" MinimumDamage="1" MaximumDamage="4" />
+  </Weapons>
+  <HealingItems>
+    <HealingItem ID="2001" Name="Healing Potion" Price="5" HitPointsToHeal="2" />
+  </HealingItems>
+  <MiscellaneousItems>
+    <MiscellaneousItem ID="3001" Name="Vial" Price="1" />
+    <MiscellaneousItem ID="3002" Name="Red Berry" Price="2" />
+    <MiscellaneousItem ID="3003" Name="Herb" Price="2" />
+    <MiscellaneousItem ID="9001" Name="Snake Fange" Price="1" />
+    <MiscellaneousItem ID="9002" Name="Snake Skin" Price="2" />
+    <MiscellaneousItem ID="9003" Name="Rat Tail" Price="1" />
+    <MiscellaneousItem ID="9004" Name="Rat Fur" Price="2" />
+    <MiscellaneousItem ID="9005" Name="Spider Fange" Price="1" />
+    <MiscellaneousItem ID="9006" Name="Spider Silk" Price="2" />
+  </MiscellaneousItems>
+</GameItems>

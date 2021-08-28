@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.IO;
+using System.Xml;
+using System.Collections.Generic;
 using System.Linq;
 using Engine.Models;
 using Engine.Actions;
@@ -7,31 +10,25 @@ namespace Engine.Factories
 {
     public static class ItemFactory
     {
+        private const string GAME_DATA_FILENAME = ".\\GameData\\GameItems.xml";
+
         private static readonly List<GameItem> _standardGameItems = new();
 
         static ItemFactory()
         {
-            _standardGameItems = new();
+            if (File.Exists(GAME_DATA_FILENAME))
+            {
+                XmlDocument data = new XmlDocument();
+                data.LoadXml(File.ReadAllText(GAME_DATA_FILENAME));
 
-            BuildWeapon(1001, "Pointy Stick", 1, 1, 2);
-            BuildWeapon(1002, "Rusty Sword", 5, 1, 3);
-
-            BuildWeapon(1501, "Snake fangs", 0, 0, 2);
-            BuildWeapon(1502, "Rat claws", 0, 0, 2);
-            BuildWeapon(1503, "Spider fangs", 0, 0, 4);
-
-            BuildHealingItem(2001, "Health Potion", 5, 2);
-
-            BuildMiscellaneousItem(3001, "Vial", 1);
-            BuildMiscellaneousItem(3002, "Berries", 2);
-            BuildMiscellaneousItem(3003, "Herbs", 2);
-
-            BuildMiscellaneousItem(9001, "Snake Fang", 1);
-            BuildMiscellaneousItem(9002, "Snakeskin", 2);
-            BuildMiscellaneousItem(9003, "Rat tail", 1);
-            BuildMiscellaneousItem(9004, "Rat fur", 2);
-            BuildMiscellaneousItem(9005, "Spider fang", 1);
-            BuildMiscellaneousItem(9006, "Spider silk", 2);
+                LoadItemsFromNodes(data.SelectNodes("/GameItems/Weapons/Weapon"));
+                LoadItemsFromNodes(data.SelectNodes("/GameItems/HealingItems/HealingItem"));
+                LoadItemsFromNodes(data.SelectNodes("/GameItems/MiscellaneousItems/MiscellaneousItem"));
+            }
+            else
+            {
+                throw new FileNotFoundException($"Missing data file: {GAME_DATA_FILENAME}");
+            }
         }
 
         public static GameItem CreateGameItem(int itemTypeID)
@@ -42,6 +39,33 @@ namespace Engine.Factories
         public static string ItemName(int itemTypeId)
         {
             return _standardGameItems.FirstOrDefault(item => item.ItemTypeID == itemTypeId)?.Name ?? "";
+        }
+
+        private static void LoadItemsFromNodes(XmlNodeList nodes)
+        {
+            if (nodes == null)
+            {
+                return;
+            }
+
+            foreach (XmlNode node in nodes)
+            {
+                GameItem.ItemCategory itemCategory = DetermineItemCategory(node.Name);
+
+                GameItem gameItem = new(itemCategory, GetXmlAttributeAsInt(node, "ID"), GetXmlAttributeAsString(node, "Name"), GetXmlAttributeAsInt(node, "Price"),
+                    itemCategory == GameItem.ItemCategory.Weapon);
+
+                if (itemCategory == GameItem.ItemCategory.Weapon)
+                {
+                    gameItem.Action = new AttackWithWeapon(gameItem, GetXmlAttributeAsInt(node, "MinimumDamage"), GetXmlAttributeAsInt(node, "MaximumDamage"));
+                }
+                else if (itemCategory == GameItem.ItemCategory.Consumable)
+                {
+                    gameItem.Action = new Heal(gameItem, GetXmlAttributeAsInt(node, "HitPointsToHeal"));
+                }
+
+                _standardGameItems.Add(gameItem);
+            }
         }
 
         private static void BuildWeapon(int itemID, string name, int price, int minimumDamage, int maximumDamage)
@@ -64,6 +88,41 @@ namespace Engine.Factories
             healingItem.Action = new Heal(healingItem, hitPoints);
 
             _standardGameItems.Add(healingItem);
+        }
+
+        private static GameItem.ItemCategory DetermineItemCategory(string itemType)
+        {
+            switch (itemType)
+            {
+                case "Weapon":
+                    return GameItem.ItemCategory.Weapon;
+                case "HealingItem":
+                    return GameItem.ItemCategory.Consumable;
+                default:
+                    return GameItem.ItemCategory.Miscellaneous;
+            }
+        }
+
+        private static int GetXmlAttributeAsInt(XmlNode node, string attributeName)
+        {
+            return Convert.ToInt32(GetXmlAttribute(node, attributeName));
+        }
+
+        private static string GetXmlAttributeAsString(XmlNode node, string attributeName)
+        {
+            return GetXmlAttribute(node, attributeName);
+        }
+
+        private static string GetXmlAttribute(XmlNode node, string attributeName)
+        {
+            XmlAttribute attribute = node.Attributes?[attributeName];
+
+            if (attribute == null)
+            {
+                throw new ArgumentException($"the attribute '{attributeName}' does not exist.");
+            }
+
+            return attribute.Value;
         }
     }
 }
