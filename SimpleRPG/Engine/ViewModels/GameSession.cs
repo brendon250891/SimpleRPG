@@ -128,6 +128,10 @@ namespace Engine.ViewModels
 
             CurrentPlayer.AddItemToInventory(ItemFactory.CreateGameItem(2001));
             CurrentPlayer.LearnRecipe(RecipeFactory.RecipeByID(1));
+            CurrentPlayer.AddItemToInventory(ItemFactory.CreateGameItem(3001));
+            CurrentPlayer.AddItemToInventory(ItemFactory.CreateGameItem(3002));
+            CurrentPlayer.AddItemToInventory(ItemFactory.CreateGameItem(3003));
+
 
             CurrentWorld = WorldFactory.CreateWorld();
 
@@ -195,6 +199,32 @@ namespace Engine.ViewModels
             CurrentPlayer.UseCurrentConsumable();
         }
 
+        public void CraftItem(Recipe recipe)
+        {
+            if (CurrentPlayer.HasAllItems(recipe.Ingredients))
+            {
+                CurrentPlayer.RemoveItemsFromInventory(recipe.Ingredients);
+
+                foreach (ItemQuantity item in recipe.OutputItems)
+                {
+                    for (int i = 0; i < item.Quantity; i++)
+                    {
+                        GameItem outputItem = ItemFactory.CreateGameItem(item.ItemID);
+                        CurrentPlayer.AddItemToInventory(outputItem);
+                        RaiseMessage($"You crafted 1 {outputItem.Name}");
+                    }
+                }
+            }
+            else
+            {
+                RaiseMessage("You do not have the required Ingredients:");
+                foreach (ItemQuantity item in recipe.Ingredients)
+                {
+                    RaiseMessage($"{item.Quantity} x {ItemFactory.ItemName(item.ItemID)}");
+                }
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -238,14 +268,7 @@ namespace Engine.ViewModels
                 {
                     if (CurrentPlayer.HasAllItems(quest.ItemsNeeded))
                     {
-                        // Remove the quest items from the players inventory
-                        foreach (ItemQuantity itemQuantity in quest.ItemsNeeded)
-                        {
-                            for (int i = 0; i < itemQuantity.Quantity; i++)
-                            {
-                                CurrentPlayer.RemoveItemFromInventory(CurrentPlayer.Inventory.First(item => item.ItemTypeID == itemQuantity.ItemID));
-                            }
-                        }
+                        CurrentPlayer.RemoveItemsFromInventory(quest.ItemsNeeded);
 
                         RaiseMessage("");
                         RaiseMessage($"You completed the quest: {quest.Name}");

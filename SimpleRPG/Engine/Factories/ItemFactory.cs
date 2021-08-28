@@ -39,6 +39,11 @@ namespace Engine.Factories
             return _standardGameItems.FirstOrDefault(gameItem => gameItem.ItemTypeID == itemTypeID)?.Clone();
         }
 
+        public static string ItemName(int itemTypeId)
+        {
+            return _standardGameItems.FirstOrDefault(item => item.ItemTypeID == itemTypeId)?.Name ?? "";
+        }
+
         private static void BuildWeapon(int itemID, string name, int price, int minimumDamage, int maximumDamage)
         {
             GameItem weapon = new(GameItem.ItemCategory.Weapon, itemID, name, price, true);
