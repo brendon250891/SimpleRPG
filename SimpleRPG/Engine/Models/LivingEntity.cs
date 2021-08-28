@@ -208,6 +208,30 @@ namespace Engine.Models
             OnPropertyChanged(nameof(HasConsumable));
         }
 
+        public void RemoveItemsFromInventory(List<ItemQuantity> items)
+        {
+            foreach (ItemQuantity item in items)
+            {
+                for (int i = 0; i < item.Quantity; i++)
+                {
+                    RemoveItemFromInventory(Inventory.First(i => i.ItemTypeID == item.ItemID));
+                }
+            }
+        }
+
+        public bool HasAllItems(List<ItemQuantity> items)
+        {
+            foreach (ItemQuantity item in items)
+            {
+                if (Inventory.Count(i => i.ItemTypeID == item.ItemID) < item.Quantity)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public void UseCurrentWeaponOn(LivingEntity target)
         {
             CurrentWeapon.PerformAction(this, target);

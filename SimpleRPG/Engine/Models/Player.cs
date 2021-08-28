@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -53,19 +52,6 @@ namespace Engine.Models
         }
 
         #region Public Methods
-
-        public bool HasAllItems(List<ItemQuantity> items)
-        {
-            foreach (ItemQuantity item in items)
-            {
-                if (Inventory.Count(i => i.ItemTypeID == item.ItemID) < item.Quantity)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         public void GainExperience(int experiencePoints)
         {
