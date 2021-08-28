@@ -65,6 +65,17 @@ namespace SimpleRPGUI
             _gameSession.CraftItem(recipe);
         }
 
+        private void OnClick_DisplayTradeScreen(object sender, RoutedEventArgs e)
+        {
+            if (_gameSession.CurrentTrader != null)
+            {
+                TradeScreen tradeScreen = new TradeScreen();
+                tradeScreen.Owner = this;
+                tradeScreen.DataContext = _gameSession;
+                tradeScreen.ShowDialog();
+            }        
+        }
+
         private void InitializeUserInputActions()
         {
             _userInputActions.Add(Key.W, () => _gameSession.Move("North"));
@@ -73,14 +84,33 @@ namespace SimpleRPGUI
             _userInputActions.Add(Key.D, () => _gameSession.Move("East"));
             _userInputActions.Add(Key.Z, () => _gameSession.AttackCurrentMonster());
             _userInputActions.Add(Key.C, () => _gameSession.UseCurrentConsumable());
+            _userInputActions.Add(Key.I, () => SetTabFocusTo("InventoryTabItem"));
+            _userInputActions.Add(Key.R, () => SetTabFocusTo("RecipesTabItem"));
+            _userInputActions.Add(Key.Q, () => SetTabFocusTo("QuestsTabItem"));
+            _userInputActions.Add(Key.T, () => OnClick_DisplayTradeScreen(this, new RoutedEventArgs()));
         }
 
 
         private void GetKeyboardInput(object sender, KeyEventArgs e)
         {
-            if(_userInputActions.ContainsKey(e.Key))
+            if (_userInputActions.ContainsKey(e.Key))
             {
                 _userInputActions[e.Key].Invoke();
+            }
+        }
+
+        private void SetTabFocusTo(string tabName)
+        {
+            foreach(object item in PlayerDataTabControl.Items)
+            {
+                if (item is TabItem tabItem)
+                {
+                    if (tabItem.Name == tabName)
+                    {
+                        tabItem.IsSelected = true;
+                        return;
+                    }
+                }
             }
         }
     }
