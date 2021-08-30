@@ -83,7 +83,7 @@ namespace Engine.Factories
                 return;
             }
 
-            location.Trader = TraderFactory.GetTraderByName(traderNode.AttributeAsString("Name"));
+            location.Trader = TraderFactory.GetTraderByID(traderNode.AttributeAsInt("ID"));
         }
     }
 }
