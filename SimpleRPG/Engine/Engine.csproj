@@ -5,18 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Images\Monsters\GiantSpider.png" />
-    <None Remove="Images\Monsters\Rat.png" />
-    <None Remove="Images\Monsters\Snake.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Images\Monsters\GiantSpider.png" />
-    <Resource Include="Images\Monsters\Rat.png" />
-    <Resource Include="Images\Monsters\Snake.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -36,6 +24,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="GameData\Locations.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="GameData\Monsters.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Images\Locations\FarmFields.png">
@@ -63,6 +54,15 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Images\Locations\Trader.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Monsters\GiantSpider.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Monsters\Rat.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Images\Monsters\Snake.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
