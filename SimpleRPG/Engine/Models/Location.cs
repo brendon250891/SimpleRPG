@@ -28,7 +28,7 @@ namespace Engine.Models
             YCoordinate = yCoordinate;
             Name = name;
             Description = description;
-            ImageName = $"pack://application:,,,/Engine;component/Images/Locations/{imageName}.png";
+            ImageName = imageName;
         }
 
         #region Public Methods

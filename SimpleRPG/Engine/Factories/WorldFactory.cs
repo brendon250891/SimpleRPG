@@ -1,45 +1,89 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using System.Xml;
+using Engine.Shared;
 using Engine.Models;
 
 namespace Engine.Factories
 {
     internal static class WorldFactory
     {
+        private const string GAME_DATA_FILENAME = ".\\GameData\\Locations.xml";
+
         internal static World CreateWorld()
         {
-            World newWorld = new();
+            World world = new();
 
-            newWorld.AddLocation(-2, -1, "Farmer's Field", "There are rows of corn growing here, with giant rats hiding between them.", "FarmFields");
-            newWorld.LocationAt(-2, -1).AddMonster(2, 100);
+            if (File.Exists(GAME_DATA_FILENAME))
+            {
+                XmlDocument data = new();
+                data.LoadXml(File.ReadAllText(GAME_DATA_FILENAME));
 
-            newWorld.AddLocation(-1, -1, "Farmer's House", "This is the house of your neighbor, Farmer Ted.", "Farmhouse");
-            newWorld.LocationAt(-1, -1).Trader = TraderFactory.GetTraderByName("Farmer Ted");
+                string rootImagePath = data.SelectSingleNode("/Locations").AttributeAsString("RootImagePath");
 
-            newWorld.AddLocation(0, -1, "Home", "This is your home.", "Home");
+                LoadLocationsFromNodes(world, rootImagePath, data.SelectNodes("/Locations/Location"));
+            }
+            else
+            {
+                throw new FileNotFoundException($"Missing data file: {GAME_DATA_FILENAME}");
+            }
 
-            newWorld.AddLocation(-1, 0, "Trading Shop", "The shop of Susan, the trader.", "Trader");
-            newWorld.LocationAt(-1, 0).Trader = TraderFactory.GetTraderByName("Susan");
+            return world;
+        }
 
-            newWorld.AddLocation(0, 0, "Town Square", "You see a fountain here.", "TownSquare");
+        private static void LoadLocationsFromNodes(World world, string rootImagePath, XmlNodeList nodes)
+        {
+            if (nodes == null)
+            {
+                return;
+            }
 
-            newWorld.AddLocation(1, 0, "Town Gate", "There is a gate here, protecting the town from giant spiders.", "TownGate");
+            foreach (XmlNode node in nodes)
+            {
+                Location location = new(node.AttributeAsInt("X"), node.AttributeAsInt("Y"), node.AttributeAsString("Name"), node.SelectSingleNode("./Description")?.InnerText ?? "", 
+                    $".{rootImagePath}{node.AttributeAsString("ImageName")}");
 
-            newWorld.AddLocation(2, 0, "Spider Forest", "The trees in this forest are covered with spider webs.", "SpiderForest");
-            newWorld.LocationAt(2, 0).AddMonster(3, 100);
+                AddMonster(location, node.SelectNodes("./Monsters/Monster"));
+                AddQuests(location, node.SelectNodes("./Quests/Quest"));
+                AddTrader(location, node.SelectSingleNode("./Trader"));
 
-            newWorld.AddLocation(0, 1, "Herbalist's Hut", "You see a small hut, with plants drying from the roof.", "HerbalistsHut");
-            newWorld.LocationAt(0, 1).Trader = TraderFactory.GetTraderByName("Pete the Herbalist");
+                world.AddLocation(location);
+            }
+        }
 
-            newWorld.LocationAt(0, 1).AvailableQuests.Add(QuestFactory.GetQuestByID(1));
+        private static void AddMonster(Location location, XmlNodeList monsterNodes)
+        {
+            if (monsterNodes == null)
+            {
+                return;
+            }
 
-            newWorld.AddLocation(0, 2, "Herbalist's Garden", "There are many plants here, with snakes hiding behind them.", "HerbalistsGarden");
-            newWorld.LocationAt(0, 2).AddMonster(1, 100);
+            foreach (XmlNode monster in monsterNodes)
+            {
+                location.AddMonster(monster.AttributeAsInt("ID"), monster.AttributeAsInt("Percent"));
+            }
+        }
 
-            return newWorld;
+        private static void AddQuests(Location location, XmlNodeList questNodes)
+        {
+            if (questNodes == null)
+            {
+                return;
+            }
+
+            foreach (XmlNode quest in questNodes)
+            {
+                location.AvailableQuests.Add(QuestFactory.GetQuestByID(quest.AttributeAsInt("ID")));
+            }
+        }
+
+        private static void AddTrader(Location location, XmlNode traderNode)
+        {
+            if (traderNode == null)
+            {
+                return;
+            }
+
+            location.Trader = TraderFactory.GetTraderByName(traderNode.AttributeAsString("Name"));
         }
     }
 }
