@@ -27,13 +27,6 @@ namespace Engine.Factories
                 throw new FileNotFoundException($"The file '{GAME_DATA_FILE}' does not exist.");
             }
 
-            List<ItemQuantity> itemsNeeded = new();
-            List<ItemQuantity> rewardItems = new();
-
-            itemsNeeded.Add(new(9001, 5));
-            rewardItems.Add(new(1002, 1));
-
-            _quests.Add(new(1, "Clear the herb garden", "Defeat the snakes in the Herbalist's garden", itemsNeeded, 25, 10, rewardItems));
         }
 
         internal static Quest GetQuestByID(int id)
@@ -50,11 +43,11 @@ namespace Engine.Factories
 
             foreach(XmlNode quest in quests)
             {
-                List<ItemQuantity> itemsNeeded = GetQuestItems(quest.SelectNodes("/ItemsNeeded"));
-                List<ItemQuantity> rewardItems = GetQuestItems(quest.SelectNodes("/RewardItems"));
+                List<ItemQuantity> itemsNeeded = GetQuestItems(quest.SelectNodes("./ItemsNeeded/Item"));
+                List<ItemQuantity> rewardItems = GetQuestItems(quest.SelectNodes("./RewardItems/Item"));
 
-                Quest q = new(quest.AttributeAsInt("ID"), quest.SelectSingleNode("/Name").InnerText, quest.SelectSingleNode("/Description").InnerText, itemsNeeded,
-                    quest.AttributeAsInt("RewardExperiencePoints"), quest.AttributeAsInt("Gold"), rewardItems);
+                Quest q = new(quest.AttributeAsInt("ID"), quest.SelectSingleNode("./Name").InnerText, quest.SelectSingleNode("./Description").InnerText, itemsNeeded,
+                    quest.AttributeAsInt("RewardExperiencePoints"), quest.AttributeAsInt("RewardGold"), rewardItems);
 
                 _quests.Add(q);
             }

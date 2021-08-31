@@ -16,6 +16,14 @@ namespace Engine.Models
 
         public List<ItemQuantity> OutputItems { get; } = new();
 
+        public string ToolTipContents =>
+            "Ingredients\r\n" +
+            "===========\r\n" +
+            $"{string.Join("\r\n", Ingredients.Select(ingredient => ingredient.QuantityItemDescription))}\r\n\r\n" +
+            "Creates\r\n" +
+            "==========\r\n" +
+            $"{string.Join("\r\n", OutputItems.Select(outputItem => outputItem.QuantityItemDescription))}";
+
         public Recipe(int id, string name)
         {
             ID = id;
