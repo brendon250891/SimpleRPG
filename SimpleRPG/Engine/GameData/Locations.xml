@@ -40,7 +40,7 @@
   <Location X="0" Y="1" Name="Herbalist's Hut" ImageName="HerbalistsHut.png">
     <Description><![CDATA[You see a small hut, with plants dying from the roof]]></Description>
     <Quests>
-      <Quests ID="1" />
+      <Quest ID="1" />
     </Quests>
     <Trader ID="3" />
   </Location>
